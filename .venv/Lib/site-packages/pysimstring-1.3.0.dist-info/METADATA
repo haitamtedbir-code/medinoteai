@@ -1,0 +1,23 @@
+Metadata-Version: 2.4
+Name: pysimstring
+Version: 1.3.0
+Summary: Easy to install clone of simstring
+Home-page: https://github.com/percevalw/simstring
+Author: Naoaki Okazaki & Blink Health & Luca Soldaini & Perceval Wajsbürt
+Author-email: perceval.wajsburt@sorbonne-universite.fr
+License-File: LICENSE
+Dynamic: author
+Dynamic: author-email
+Dynamic: description
+Dynamic: home-page
+Dynamic: license-file
+Dynamic: summary
+
+[![Tests](https://github.com/percevalw/pysimstring/actions/workflows/tests.yml/badge.svg?branch=master)](https://github.com/percevalw/pysimstring/actions/workflows/tests.yml)
+
+# SimString Python Package
+
+Orginal version by [chokkan](https://github.com/chokkan/simstring) and [QuickUMLS](https://github.com/Georgetown-IR-Lab/simstring).
+
+This version removes the [libiconv](https://www.gnu.org/software/libiconv/) dependency
+which required a conda installation before installing the simstring package on Windows.

@@ -5827,10 +5827,32 @@ footer {
                 <div class="note-section">
 
                     <h4>
-                        Observations
+                        Antécédents et traitements
                     </h4>
 
-                    <textarea id="noteObservations" aria-label="Observations">La transcription de la consultation apparaîtra ici pour révision.</textarea>
+                    <textarea id="noteHistory" aria-label="Antécédents et traitements">Non renseigné dans la conversation.</textarea>
+
+                </div>
+
+
+                <div class="note-section">
+
+                    <h4>
+                        Examen clinique
+                    </h4>
+
+                    <textarea id="noteExam" aria-label="Examen clinique">Non renseigné dans la conversation.</textarea>
+
+                </div>
+
+
+                <div class="note-section">
+
+                    <h4>
+                        Maladie / Diagnostic évoqué
+                    </h4>
+
+                    <textarea id="noteObservations" aria-label="Maladie ou diagnostic évoqué">Aucun diagnostic explicite détecté. À confirmer par le médecin.</textarea>
 
                 </div>
 
@@ -6303,6 +6325,12 @@ const noteReason =
 
 const noteSymptoms =
     document.getElementById("noteSymptoms");
+
+const noteHistory =
+    document.getElementById("noteHistory");
+
+const noteExam =
+    document.getElementById("noteExam");
 
 const noteObservations =
     document.getElementById("noteObservations");
@@ -7233,48 +7261,231 @@ function setGeneratedNoteAsDraft() {
 }
 
 
-function buildMedicalNoteFromTranscript() {
+/*
+   Extraction locale d'une note courte.
+   La transcription complète reste dans #transcriptionText : elle n'est jamais
+   copiée dans la note médicale.
+*/
+
+const MEDICAL_SYMPTOMS = [
+    { fr: "Toux sèche", en: "Dry cough", pattern: /\b(toux s[eè]che|dry cough)\b/i },
+    { fr: "Toux avec expectoration", en: "Productive cough", pattern: /\b(toux (?:avec|accompagn[eé]e? de) (?:crachats?|expectoration)|productive cough|phlegm)\b/i },
+    { fr: "Toux", en: "Cough", pattern: /\b(toux|tousse|tousser|cough(?:ing)?)\b/i },
+    { fr: "Fièvre", en: "Fever", pattern: /\b(fi[eè]vre|f[eé]brile|fever)\b/i },
+    { fr: "Douleur thoracique", en: "Chest pain", pattern: /\b(douleur (?:dans la poitrine|thoracique)|mal (?:dans la poitrine|au thorax)|chest pain)\b/i },
+    { fr: "Difficulté respiratoire", en: "Breathing difficulty", pattern: /\b(difficult[eé]s? (?:à|a) respirer|g[eê]ne respiratoire|essoufflement|dyspn[eé]e|shortness of breath|breathing difficult(?:y|ies))\b/i },
+    { fr: "Fatigue", en: "Fatigue", pattern: /\b(fatigue|fatigu[eé]e?|asth[eé]nie|tiredness|tired)\b/i },
+    { fr: "Nez bouché", en: "Blocked nose", pattern: /\b(nez bouch[eé]|congestion nasale|blocked nose|nasal congestion)\b/i },
+    { fr: "Maux de tête", en: "Headache", pattern: /\b(maux? de t[eê]te|c[eé]phal[eé]es?|headaches?)\b/i },
+    { fr: "Douleurs musculaires", en: "Muscle aches", pattern: /\b(douleurs? musculaires?|courbatures?|myalgies?|muscle aches?)\b/i },
+    { fr: "Mal de gorge", en: "Sore throat", pattern: /\b(mal de gorge|gorge (?:irrit[eé]e|douloureuse)|sore throat)\b/i },
+    { fr: "Nausées", en: "Nausea", pattern: /\b(naus[eé]es?|nausea)\b/i },
+    { fr: "Vomissements", en: "Vomiting", pattern: /\b(vomissements?|vomir|vomiting)\b/i },
+    { fr: "Diarrhée", en: "Diarrhea", pattern: /\b(diarrh[eé]e|diarrhea)\b/i },
+    { fr: "Vertiges", en: "Dizziness", pattern: /\b(vertiges?|[eé]tourdissements?|dizziness|dizzy)\b/i },
+    { fr: "Douleur abdominale", en: "Abdominal pain", pattern: /\b(douleur abdominale|mal au ventre|abdominal pain|stomach ache)\b/i },
+    { fr: "Palpitations", en: "Palpitations", pattern: /\b(palpitations?|palpitations?)\b/i },
+    { fr: "Perte d'appétit", en: "Loss of appetite", pattern: /\b(perte d['’]app[eé]tit|loss of appetite)\b/i },
+    { fr: "Insomnie", en: "Insomnia", pattern: /\b(insomnie|troubles? du sommeil|insomnia)\b/i }
+];
+
+const MEDICAL_DIAGNOSES = [
+    { fr: "Infection respiratoire virale", en: "Viral respiratory infection", pattern: /\b(infection (?:respiratoire )?virale|viral respiratory infection)\b/i },
+    { fr: "Infection respiratoire", en: "Respiratory infection", pattern: /\b(infection respiratoire|respiratory infection)\b/i },
+    { fr: "Grippe", en: "Flu", pattern: /\b(grippe|influenza|flu)\b/i },
+    { fr: "COVID-19", en: "COVID-19", pattern: /\b(covid(?:-?19)?|coronavirus)\b/i },
+    { fr: "Rhume", en: "Common cold", pattern: /\b(rhume|common cold)\b/i },
+    { fr: "Bronchite", en: "Bronchitis", pattern: /\b(bronchite|bronchitis)\b/i },
+    { fr: "Angine", en: "Tonsillitis", pattern: /\b(angine|tonsillitis)\b/i },
+    { fr: "Allergie", en: "Allergy", pattern: /\b(allergie|allergic|allergy)\b/i },
+    { fr: "Migraine", en: "Migraine", pattern: /\b(migraine)\b/i },
+    { fr: "Gastro-entérite", en: "Gastroenteritis", pattern: /\b(gastro(?:-ent[eé]rite)?|gastroenteritis)\b/i },
+    { fr: "Hypertension artérielle", en: "Hypertension", pattern: /\b(hypertension(?: art[eé]rielle)?|high blood pressure)\b/i },
+    { fr: "Diabète", en: "Diabetes", pattern: /\b(diab[eè]te|diabetes)\b/i }
+];
+
+const MEDICAL_RECOMMENDATIONS = [
+    { fr: "Repos", en: "Rest", pattern: /\b(repos|reposez-vous|se reposer|rest)\b/i },
+    { fr: "Hydratation", en: "Hydration", pattern: /\b(hydratation|hydratez-vous|boire (?:beaucoup|suffisamment|de l['’]eau)|drink (?:plenty of )?water|hydration)\b/i },
+    { fr: "Surveillance des symptômes", en: "Symptom monitoring", pattern: /\b(surveill(?:er|ez)|surveillance|monitor(?:ing)?)\b/i },
+    { fr: "Consultation de suivi", en: "Follow-up consultation", pattern: /\b(suivi m[eé]dical|consultation de suivi|revoir|follow-up)\b/i },
+    { fr: "Consulter en cas d'aggravation", en: "Seek care if symptoms worsen", pattern: /\b(consultez rapidement|en cas d['’]aggravation|si .*s['’]aggrave|seek (?:urgent )?care|if .*worsens?)\b/i },
+    { fr: "Examens complémentaires", en: "Additional tests", pattern: /\b(examens? compl[eé]mentaires?|analyse de sang|radiographie|scanner|additional tests?|blood test|x-ray)\b/i }
+];
+
+function splitMedicalTranscript(text) {
+    return text
+        .replace(/\r?\n+/g, ". ")
+        .replace(/\s+/g, " ")
+        .split(/(?<=[.!?])\s+|\s+(?=(?:m[eé]decin|patient|doctor)\s*:)/i)
+        .map(sentence => sentence
+            .replace(/^(?:m[eé]decin|patient|doctor)\s*:\s*/i, "")
+            .trim())
+        .filter(Boolean);
+}
+
+function isMedicalQuestion(sentence) {
+    return /\?$|\b(avez-vous|ressentez-vous|souffrez-vous|est-ce que|pouvez-vous|depuis quand|do you|have you|are you|how long)\b/i.test(sentence);
+}
+
+function isConditionalMedicalAdvice(sentence) {
+    return /\b(si vous|en cas de|consultez|surveillez|vous devriez|if you|in case of|you should|seek care)\b/i.test(sentence);
+}
+
+function matchIsNegated(sentence, pattern) {
+    const match = sentence.match(pattern);
+    if (!match || match.index === undefined) return false;
+
+    const before = sentence.slice(Math.max(0, match.index - 45), match.index).toLowerCase();
+    const around = sentence.slice(Math.max(0, match.index - 25), match.index + match[0].length + 20).toLowerCase();
+
+    return /(?:pas de|plus de|aucun(?:e)?|sans|nie|n['’]a pas|ne pr[eé]sente pas|no|without|denies)\s+(?:\w+\s+){0,3}$/.test(before) ||
+           /\bne\b.{0,30}\bpas\b/.test(around);
+}
+
+function uniqueMedicalLabels(items, language) {
+    return [...new Set(items.map(item => language === "en" ? item.en : item.fr))];
+}
+
+function extractConfirmedSymptoms(sentences, language) {
+    const detected = [];
+
+    sentences.forEach(sentence => {
+        if (isMedicalQuestion(sentence) || isConditionalMedicalAdvice(sentence)) return;
+
+        MEDICAL_SYMPTOMS.forEach(item => {
+            if (item.pattern.test(sentence) && !matchIsNegated(sentence, item.pattern)) {
+                detected.push(item);
+            }
+        });
+    });
+
+    const labels = uniqueMedicalLabels(detected, language);
+
+    // Évite d'afficher "Toux" lorsque le type précis est déjà connu.
+    const genericCough = language === "en" ? "Cough" : "Toux";
+    const preciseCough = language === "en"
+        ? ["Dry cough", "Productive cough"]
+        : ["Toux sèche", "Toux avec expectoration"];
+
+    if (preciseCough.some(label => labels.includes(label))) {
+        return labels.filter(label => label !== genericCough);
+    }
+
+    return labels;
+}
+
+function extractDiagnosis(sentences, language) {
+    const diagnosisMarkers = /\b(diagnostic|il s['’]agit|c['’]est|probablement|[eé]voque|compatible avec|confirme|diagnosed|diagnosis|likely|probably|consistent with|this is)\b/i;
+    const detected = [];
+
+    sentences.forEach(sentence => {
+        MEDICAL_DIAGNOSES.forEach(item => {
+            if (item.pattern.test(sentence) &&
+                !isMedicalQuestion(sentence) &&
+                !matchIsNegated(sentence, item.pattern) &&
+                diagnosisMarkers.test(sentence)) {
+                detected.push(item);
+            }
+        });
+    });
+
+    const labels = uniqueMedicalLabels(detected, language);
+    const genericRespiratory = language === "en"
+        ? "Respiratory infection"
+        : "Infection respiratoire";
+    const preciseRespiratory = language === "en"
+        ? "Viral respiratory infection"
+        : "Infection respiratoire virale";
+
+    return labels.includes(preciseRespiratory)
+        ? labels.filter(label => label !== genericRespiratory)
+        : labels;
+}
+
+function extractRecommendations(sentences, language) {
+    const detected = [];
+
+    sentences.forEach(sentence => {
+        if (isMedicalQuestion(sentence)) return;
+
+        MEDICAL_RECOMMENDATIONS.forEach(item => {
+            if (item.pattern.test(sentence) && !matchIsNegated(sentence, item.pattern)) {
+                detected.push(item);
+            }
+        });
+    });
+
+    return uniqueMedicalLabels(detected, language);
+}
+
+function extractDuration(sentences) {
+    for (const sentence of sentences) {
+        if (isMedicalQuestion(sentence)) continue;
+
+        const match = sentence.match(/\bdepuis\s+(?:environ\s+)?(?:\d+|un|une|deux|trois|quatre|cinq|six|sept|huit|neuf|dix|quelques)\s+(?:heures?|jours?|semaines?|mois|ans?)\b|\bfor\s+(?:about\s+)?(?:\d+|one|two|three|four|five|six|seven|eight|nine|ten|a few)\s+(?:hours?|days?|weeks?|months?|years?)\b/i);
+
+        if (match) return match[0];
+    }
+
+    return "";
+}
+
+async function buildMedicalNoteFromTranscript() {
 
     const transcript = transcriptionText.value.trim();
 
-    const sentences = transcript
-        .split(/(?<=[.!?])\s+/)
-        .map(sentence => sentence.trim())
-        .filter(Boolean);
+    if (!transcript) {
+        throw new Error(dashboardMessage(
+            "Ajoutez ou transcrivez une conversation avant de générer la note.",
+            "Add or transcribe a conversation before generating the note."
+        ));
+    }
 
-    const symptomKeywords =
-        /douleur|fatigue|fièvre|toux|nausée|vertige|gêne|symptôme|pain|fever|cough|nausea|dizziness|fatigue/i;
+    const response = await fetch("/api/generate-note", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            transcript,
+            language: document.documentElement.lang === "en" ? "en" : "fr"
+        })
+    });
 
-    const symptomSentences =
-        sentences.filter(sentence => symptomKeywords.test(sentence));
+    const result = await response.json().catch(() => ({}));
 
-    noteReason.value = sentences[0] || dashboardMessage(
-        "Motif à compléter par le médecin.",
-        "Reason to be completed by the doctor."
-    );
+    if (!response.ok) {
+        throw new Error(
+            result.error || dashboardMessage(
+                "La génération de la note médicale a échoué.",
+                "Medical note generation failed."
+            )
+        );
+    }
 
-    noteSymptoms.value = symptomSentences.join(" ") || dashboardMessage(
-        "Aucun symptôme précis détecté automatiquement. À confirmer pendant la révision.",
-        "No specific symptom was automatically detected. Confirm during review."
-    );
+    const note = result.note || {};
 
-    noteObservations.value = transcript || dashboardMessage(
-        "Audio importé. Ajoutez ou corrigez les observations cliniques.",
-        "Audio uploaded. Add or correct the clinical observations."
-    );
-
-    notePlan.value = dashboardMessage(
-        "Plan thérapeutique et recommandations à compléter par le médecin.",
-        "Treatment plan and recommendations to be completed by the doctor."
-    );
+    noteReason.value = note.motif_consultation || "Non renseigné dans la conversation.";
+    noteSymptoms.value = note.symptomes || "Non renseigné dans la conversation.";
+    noteHistory.value = note.antecedents_traitements || "Non renseigné dans la conversation.";
+    noteExam.value = note.examen_clinique || "Non renseigné dans la conversation.";
+    noteObservations.value = note.diagnostic_evoque || "Non renseigné dans la conversation.";
+    notePlan.value = note.plan_recommandations || "Non renseigné dans la conversation.";
 
     updatePatientSummary();
-
     setGeneratedNoteAsDraft();
 }
 
 
-processBtn.addEventListener("click", () => {
+function updateGenerationProgress(percent, messageFr, messageEn) {
+    progressFill.style.width = percent + "%";
+    progressPercent.textContent = percent + "%";
+    progressText.textContent = dashboardMessage(messageFr, messageEn);
+}
+
+
+processBtn.addEventListener("click", async () => {
 
     if (noteGenerated) {
 
@@ -7290,95 +7501,61 @@ processBtn.addEventListener("click", () => {
 
     processBtn.classList.remove("generated");
 
+    transcriptionStatus.classList.remove("error");
+
     setClinicalWorkflowStep(3);
 
     processBtn.innerHTML =
         '<i class="fa-solid fa-spinner fa-spin"></i> ' +
         dashboardMessage("Traitement en cours...", "Processing...");
 
-    progressFill.style.width = "0%";
+    updateGenerationProgress(15, "Préparation de la transcription...", "Preparing transcript...");
 
-    progressText.textContent =
-        dashboardMessage("Transcription...", "Transcription...");
+    try {
+        updateGenerationProgress(40, "Détection clinique EDS-NLP...", "EDS-NLP clinical detection...");
 
-    progressPercent.textContent =
-        "0%";
+        const generationPromise = buildMedicalNoteFromTranscript();
 
-
-    let progress = 0;
-
-
-    const interval =
-        setInterval(() => {
-
-            progress += 10;
-
-            progressFill.style.width =
-                progress + "%";
-
-            progressPercent.textContent =
-                progress + "%";
-
-
-            if (progress < 40) {
-
-                progressText.textContent =
-                    dashboardMessage("Transcription...", "Transcription...");
-
+        window.setTimeout(() => {
+            if (!noteGenerated) {
+                updateGenerationProgress(70, "Analyse locale Qwen3...", "Local Qwen3 analysis...");
             }
+        }, 800);
 
-            else if (progress < 70) {
+        await generationPromise;
 
-                progressText.textContent =
-                    dashboardMessage("Analyse IA...", "AI analysis...");
+        updateGenerationProgress(100, "Terminé", "Completed");
 
-            }
+        processBtn.innerHTML =
+            '<i class="fa-solid fa-circle-check"></i> ' +
+            dashboardMessage(
+                "Note médicale générée — consulter",
+                "Medical note generated — view"
+            );
 
-            else if (progress < 100) {
+        noteGenerated = true;
+        processBtn.classList.add("generated");
+        noteResult.classList.add("active");
+        setClinicalWorkflowStep(5);
 
-                progressText.textContent =
-                    dashboardMessage("Génération de la note...", "Generating note...");
+        setTimeout(() => {
+            noteResult.scrollIntoView({
+                behavior: "smooth",
+                block: "center"
+            });
+        }, 300);
 
-            }
-
-            else {
-
-                clearInterval(interval);
-
-                progressText.textContent =
-                    dashboardMessage("Terminé", "Completed");
-
-                processBtn.innerHTML =
-                    '<i class="fa-solid fa-circle-check"></i> ' +
-                    dashboardMessage(
-                        "Note médicale générée — consulter",
-                        "Medical note generated — view"
-                    );
-
-                noteGenerated = true;
-
-                processBtn.disabled = false;
-
-                processBtn.classList.add("generated");
-
-                noteResult.classList.add("active");
-
-                buildMedicalNoteFromTranscript();
-
-                setClinicalWorkflowStep(5);
-
-                setTimeout(() => {
-
-                    noteResult.scrollIntoView({
-                        behavior: "smooth",
-                        block: "center"
-                    });
-
-                }, 300);
-
-            }
-
-        }, 250);
+    } catch (error) {
+        updateGenerationProgress(0, "Échec de la génération", "Generation failed");
+        processBtn.innerHTML =
+            '<i class="fa-solid fa-triangle-exclamation"></i> ' +
+            dashboardMessage("Réessayer", "Try again");
+        transcriptionStatus.classList.add("error");
+        transcriptionStatus.textContent = error.message;
+        noteGenerated = false;
+    } finally {
+        processBtn.disabled = false;
+    }
 
 });
 
@@ -7390,6 +7567,8 @@ processBtn.addEventListener("click", () => {
 const editableNoteFields = [
     noteReason,
     noteSymptoms,
+    noteHistory,
+    noteExam,
     noteObservations,
     notePlan
 ];
@@ -7397,7 +7576,7 @@ const editableNoteFields = [
 
 editableNoteFields.forEach(field => {
 
-    field.addEventListener("input", () => {
+    field.addEventListener("input", (event) => {
 
         if (!noteResult.classList.contains("active")) return;
 
@@ -7438,7 +7617,9 @@ function getMedicalSessionData() {
         medicalNote: {
             reason: noteReason.value.trim(),
             symptoms: noteSymptoms.value.trim(),
-            observations: noteObservations.value.trim(),
+            history: noteHistory.value.trim(),
+            clinicalExam: noteExam.value.trim(),
+            diagnosis: noteObservations.value.trim(),
             plan: notePlan.value.trim()
         },
         validatedAt: new Date().toISOString(),
@@ -7582,7 +7763,9 @@ function createPrintableMedicalNote() {
         escapeMedicalText(patientDetails) + "</div>" +
         printSection(dashboardMessage("Motif de consultation", "Reason for consultation"), session.medicalNote.reason) +
         printSection(dashboardMessage("Symptômes", "Symptoms"), session.medicalNote.symptoms) +
-        printSection(dashboardMessage("Observations", "Observations"), session.medicalNote.observations) +
+        printSection(dashboardMessage("Antécédents et traitements", "Medical history and treatments"), session.medicalNote.history) +
+        printSection(dashboardMessage("Examen clinique", "Clinical examination"), session.medicalNote.clinicalExam) +
+        printSection(dashboardMessage("Maladie / Diagnostic évoqué", "Condition / Suggested diagnosis"), session.medicalNote.diagnosis) +
         printSection(dashboardMessage("Plan / Recommandations", "Plan / Recommendations"), session.medicalNote.plan) +
         '<div class="print-signature"><span>' + dashboardMessage("Signature et cachet du médecin", "Doctor signature and stamp") + '</span></div>';
 }
@@ -7884,7 +8067,10 @@ document
         "Motif de consultation": "Reason for consultation",
         "Consultation médicale de suivi. Le patient présente des symptômes nécessitant une évaluation clinique.": "Follow-up medical consultation. The patient presents symptoms requiring clinical evaluation.",
         "Symptômes": "Symptoms",
+        "Antécédents et traitements": "Medical history and treatments",
+        "Examen clinique": "Clinical examination",
         "Fatigue, douleurs légères et inconfort rapportés par le patient.": "Fatigue, mild pain, and discomfort reported by the patient.",
+        "Maladie / Diagnostic évoqué": "Condition / Suggested diagnosis",
         "Observations": "Observations",
         "Les informations importantes de la conversation ont été identifiées automatiquement.": "Important information from the conversation was identified automatically.",
         "Plan / Recommandations": "Plan / Recommendations",
