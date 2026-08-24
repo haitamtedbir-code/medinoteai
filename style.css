@@ -1,0 +1,2453 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="MediNOTE AI - Solution intelligente de transformation de l'audio médical en notes structurées."
+    >
+
+    <title>MediNOTE AI | Medical AI Assistant</title>
+
+
+    <!-- =====================================================
+         GOOGLE FONT
+    ====================================================== -->
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+
+    <!-- =====================================================
+         FONT AWESOME
+    ====================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+
+
+    <!-- =====================================================
+         CSS
+    ====================================================== -->
+
+    <style>
+
+        /* =====================================================
+           RESET
+        ====================================================== */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+
+        body {
+            font-family: "Poppins", sans-serif;
+
+            background: #ffffff;
+
+            color: #101828;
+
+            min-height: 100vh;
+
+            overflow-x: hidden;
+        }
+
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+
+        button {
+            font-family: inherit;
+        }
+
+
+        /* =====================================================
+           HEADER
+        ====================================================== */
+
+        .site-header {
+
+            position: fixed;
+
+            top: 0;
+            left: 0;
+
+            width: 100%;
+
+            height: 86px;
+
+            background: rgba(255, 255, 255, 0.96);
+
+            border-top: 2px solid #3156c8;
+
+            border-bottom: 1px solid #edf1f7;
+
+            backdrop-filter: blur(15px);
+
+            -webkit-backdrop-filter: blur(15px);
+
+            z-index: 9999;
+
+            box-shadow:
+                0 4px 20px rgba(20, 50, 120, 0.04);
+        }
+
+
+        /* =====================================================
+           HEADER INNER
+        ====================================================== */
+
+        .header-inner {
+
+            width: min(1400px, calc(100% - 70px));
+
+            height: 100%;
+
+            margin: 0 auto;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 35px;
+        }
+
+
+        /* =====================================================
+           LOGO
+        ====================================================== */
+
+        .brand {
+
+            display: flex;
+
+            align-items: center;
+
+            flex-shrink: 0;
+
+            height: 100%;
+
+            cursor: pointer;
+        }
+
+
+        .brand img {
+
+            width: 350px;
+
+            height: auto;
+
+            max-height: 76px;
+
+            object-fit: contain;
+
+            display: block;
+
+            transition: transform 0.25s ease;
+        }
+
+
+        .brand:hover img {
+
+            transform: scale(1.03);
+        }
+
+
+        /* =====================================================
+           NAVIGATION
+        ====================================================== */
+
+        .main-nav {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 3px;
+
+            padding: 7px 7px 7px 10px;
+
+            background: #f9fbff;
+
+            border: 1px solid #dce5f5;
+
+            border-radius: 42px;
+
+            box-shadow:
+                0 8px 25px rgba(30, 65, 150, 0.07);
+        }
+
+
+        /* =====================================================
+           NAV LINKS
+        ====================================================== */
+
+        .nav-link {
+
+            position: relative;
+
+            height: 44px;
+
+            padding: 0 15px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            color: #101828;
+
+            font-size: 13px;
+
+            font-weight: 500;
+
+            white-space: nowrap;
+
+            border-radius: 25px;
+
+            transition:
+                color 0.25s ease,
+                background 0.25s ease;
+        }
+
+
+        .nav-link:hover {
+
+            color: #3156c8;
+
+            background: #ffffff;
+        }
+
+
+        /* =====================================================
+           ACTIVE NAV LINK
+        ====================================================== */
+
+        .nav-link.active {
+
+            color: #3156c8;
+
+            background: #ffffff;
+
+            font-weight: 600;
+        }
+
+
+        .nav-link.active::after {
+
+            content: "";
+
+            position: absolute;
+
+            bottom: 5px;
+
+            left: 50%;
+
+            width: 5px;
+
+            height: 5px;
+
+            border-radius: 50%;
+
+            background: #3156c8;
+
+            transform: translateX(-50%);
+        }
+
+
+        /* =====================================================
+           SOCIAL LINKS
+        ====================================================== */
+
+        .social-links {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+            margin-left: 5px;
+        }
+
+
+        .social-btn {
+
+            width: 37px;
+
+            height: 37px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            border-radius: 50%;
+
+            background: #ffffff;
+
+            border: 1px solid #dbe3f1;
+
+            color: #101828;
+
+            font-size: 13px;
+
+            box-shadow:
+                0 3px 10px rgba(0, 0, 0, 0.03);
+
+            transition:
+                background 0.25s ease,
+                color 0.25s ease,
+                transform 0.25s ease;
+        }
+
+
+        .social-btn:hover {
+
+            background: #3156c8;
+
+            color: #ffffff;
+
+            transform: translateY(-2px);
+        }
+
+
+        /* =====================================================
+           CONTACT BUTTON
+        ====================================================== */
+
+        .contact-btn {
+
+            height: 44px;
+
+            padding: 0 27px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            margin-left: 4px;
+
+            border-radius: 25px;
+
+            background: #3046b8;
+
+            color: #ffffff;
+
+            font-size: 13.5px;
+
+            font-weight: 600;
+
+            box-shadow:
+                0 7px 20px rgba(48, 70, 184, 0.25);
+
+            transition:
+                background 0.25s ease,
+                transform 0.25s ease,
+                box-shadow 0.25s ease;
+        }
+
+
+        .contact-btn:hover {
+
+            background: #2439a5;
+
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 10px 25px rgba(48, 70, 184, 0.32);
+        }
+
+
+        /* =====================================================
+           MOBILE BUTTON
+        ====================================================== */
+
+        .mobile-toggle {
+
+            display: none;
+
+            width: 45px;
+
+            height: 45px;
+
+            align-items: center;
+
+            justify-content: center;
+
+            border: 1px solid #dbe3f1;
+
+            border-radius: 50%;
+
+            background: #f8faff;
+
+            color: #3046b8;
+
+            cursor: pointer;
+
+            font-size: 18px;
+
+            transition: 0.25s ease;
+        }
+
+
+        .mobile-toggle:hover {
+
+            background: #3046b8;
+
+            color: #ffffff;
+        }
+
+
+        /* =====================================================
+           MOBILE MENU
+        ====================================================== */
+
+        .mobile-menu {
+
+            display: none;
+
+            position: fixed;
+
+            top: 86px;
+
+            left: 15px;
+
+            right: 15px;
+
+            padding: 15px;
+
+            background: #ffffff;
+
+            border: 1px solid #e0e6f2;
+
+            border-radius: 20px;
+
+            box-shadow:
+                0 20px 45px rgba(20, 50, 120, 0.15);
+
+            z-index: 9998;
+        }
+
+
+        .mobile-menu.active {
+
+            display: block;
+
+            animation: menuAnimation 0.25s ease;
+        }
+
+
+        @keyframes menuAnimation {
+
+            from {
+
+                opacity: 0;
+
+                transform: translateY(-10px);
+            }
+
+            to {
+
+                opacity: 1;
+
+                transform: translateY(0);
+            }
+        }
+
+
+        .mobile-menu a {
+
+            display: flex;
+
+            align-items: center;
+
+            padding: 13px 15px;
+
+            margin-bottom: 3px;
+
+            border-radius: 10px;
+
+            font-size: 14px;
+
+            color: #101828;
+
+            transition: 0.2s ease;
+        }
+
+
+        .mobile-menu a:hover {
+
+            background: #f2f5ff;
+
+            color: #3156c8;
+        }
+
+
+        .mobile-menu .mobile-contact {
+
+            justify-content: center;
+
+            margin-top: 10px;
+
+            background: #3046b8;
+
+            color: #ffffff;
+        }
+
+
+        .mobile-menu .mobile-contact:hover {
+
+            background: #2439a5;
+
+            color: #ffffff;
+        }
+
+
+        /* =====================================================
+           HERO
+        ====================================================== */
+
+        .hero {
+
+            min-height: 100vh;
+
+            padding-top: 86px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            position: relative;
+
+            overflow: hidden;
+
+            background:
+                radial-gradient(
+                    circle at 15% 30%,
+                    rgba(42, 105, 199, 0.08),
+                    transparent 30%
+                ),
+                radial-gradient(
+                    circle at 85% 65%,
+                    rgba(36, 168, 111, 0.08),
+                    transparent 30%
+                ),
+                #ffffff;
+        }
+
+
+        /* =====================================================
+           HERO DECORATIONS
+        ====================================================== */
+
+        .hero::before {
+
+            content: "";
+
+            position: absolute;
+
+            width: 500px;
+
+            height: 500px;
+
+            border-radius: 50%;
+
+            border: 1px solid rgba(49, 86, 200, 0.08);
+
+            top: 15%;
+
+            left: -250px;
+        }
+
+
+        .hero::after {
+
+            content: "";
+
+            position: absolute;
+
+            width: 350px;
+
+            height: 350px;
+
+            border-radius: 50%;
+
+            border: 1px solid rgba(37, 166, 109, 0.08);
+
+            right: -150px;
+
+            bottom: 10%;
+        }
+
+
+        .hero-content {
+
+            position: relative;
+
+            z-index: 2;
+
+            max-width: 950px;
+
+            padding: 50px 25px;
+
+            text-align: center;
+        }
+
+
+        /* =====================================================
+           HERO BADGE
+        ====================================================== */
+
+        .hero-badge {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 9px;
+
+            padding: 8px 16px;
+
+            margin-bottom: 25px;
+
+            background: #f2f6ff;
+
+            border: 1px solid #dce6fb;
+
+            border-radius: 30px;
+
+            color: #3156c8;
+
+            font-size: 12px;
+
+            font-weight: 600;
+        }
+
+
+        .hero-badge i {
+
+            font-size: 11px;
+        }
+
+
+        /* =====================================================
+           HERO TITLE
+        ====================================================== */
+
+        .hero h1 {
+
+            font-size: clamp(42px, 6vw, 76px);
+
+            line-height: 1.08;
+
+            font-weight: 700;
+
+            color: #14245b;
+
+            margin-bottom: 25px;
+
+            letter-spacing: -2px;
+        }
+
+
+        .hero h1 span {
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #1767c8,
+                    #25a66d
+                );
+
+            -webkit-background-clip: text;
+
+            -webkit-text-fill-color: transparent;
+
+            background-clip: text;
+        }
+
+
+        /* =====================================================
+           HERO TEXT
+        ====================================================== */
+
+        .hero p {
+
+            max-width: 720px;
+
+            margin: 0 auto 35px;
+
+            color: #667085;
+
+            font-size: 17px;
+
+            line-height: 1.8;
+        }
+
+
+        /* =====================================================
+           HERO BUTTONS
+        ====================================================== */
+
+        .hero-buttons {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            gap: 12px;
+
+            flex-wrap: wrap;
+        }
+
+
+        .primary-btn {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            gap: 10px;
+
+            padding: 14px 25px;
+
+            border-radius: 30px;
+
+            background: #3046b8;
+
+            color: #ffffff;
+
+            font-size: 14px;
+
+            font-weight: 600;
+
+            box-shadow:
+                0 10px 25px rgba(48, 70, 184, 0.22);
+
+            transition: 0.25s ease;
+        }
+
+
+        .primary-btn:hover {
+
+            transform: translateY(-2px);
+
+            background: #2439a5;
+        }
+
+
+        .secondary-btn {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            gap: 10px;
+
+            padding: 13px 24px;
+
+            border-radius: 30px;
+
+            background: #ffffff;
+
+            border: 1px solid #d8e0ef;
+
+            color: #1d2c55;
+
+            font-size: 14px;
+
+            font-weight: 600;
+
+            transition: 0.25s ease;
+        }
+
+
+        .secondary-btn:hover {
+
+            border-color: #3156c8;
+
+            color: #3156c8;
+
+            transform: translateY(-2px);
+        }
+
+
+        /* =====================================================
+           SECTION COMMON
+        ====================================================== */
+
+        section:not(.hero) {
+
+            padding: 110px 30px;
+
+            scroll-margin-top: 86px;
+        }
+
+
+        .section-container {
+
+            max-width: 1150px;
+
+            margin: 0 auto;
+
+            text-align: center;
+        }
+
+
+        .section-label {
+
+            display: inline-block;
+
+            margin-bottom: 12px;
+
+            color: #3156c8;
+
+            font-size: 12px;
+
+            font-weight: 700;
+
+            text-transform: uppercase;
+
+            letter-spacing: 1.5px;
+        }
+
+
+        .section-title {
+
+            font-size: clamp(30px, 4vw, 45px);
+
+            color: #14245b;
+
+            margin-bottom: 18px;
+        }
+
+
+        .section-description {
+
+            max-width: 700px;
+
+            margin: 0 auto;
+
+            color: #667085;
+
+            line-height: 1.8;
+
+            font-size: 15px;
+        }
+
+
+        /* =====================================================
+           FEATURES / LA SOLUTION
+        ====================================================== */
+
+        #fonctionnalites {
+            background: linear-gradient(180deg, #ffffff 0%, #f5f8ff 100%);
+        }
+
+        .features-grid {
+            margin-top: 42px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+        }
+
+        .feature-card {
+            position: relative;
+            min-height: 285px;
+            padding: 0;
+            background: #ffffff;
+            border: 1px solid #ccd7eb;
+            border-left: 8px solid #202d82;
+            border-radius: 15px;
+            overflow: hidden;
+            text-align: left;
+            display: flex;
+            transition: 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: #c1cde5;
+            box-shadow: 0 15px 35px rgba(30, 65, 150, 0.12);
+        }
+
+        .feature-content {
+            position: relative;
+            z-index: 2;
+            width: 59%;
+            padding: 23px 10px 20px 18px;
+        }
+
+        .feature-icon {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 9px;
+            border-radius: 50%;
+            background: #202d82;
+            color: #ffffff;
+            font-size: 20px;
+        }
+
+        .feature-card h3 {
+            margin-bottom: 3px;
+            color: #1d2d83;
+            font-size: 18px;
+            line-height: 1.2;
+        }
+
+        .feature-subtitle {
+            margin-bottom: 13px;
+            color: #111d65;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .feature-card p {
+            max-width: 330px;
+            margin-bottom: 13px;
+            color: #17256f;
+            line-height: 1.55;
+            font-size: 11px;
+        }
+
+        .feature-list {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .feature-list li {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #17256f;
+            font-size: 10.5px;
+            line-height: 1.3;
+        }
+
+        .feature-list i {
+            color: #26398d;
+            font-size: 13px;
+        }
+
+        .feature-visual {
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: 45%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background: linear-gradient(135deg, #f5f8ff, #e9f1fb);
+        }
+
+        .feature-visual::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 52%;
+            height: 100%;
+            z-index: 1;
+            background: linear-gradient(to right, #ffffff, rgba(255,255,255,0));
+        }
+
+        .visual-window {
+            position: relative;
+            z-index: 2;
+            width: 76%;
+            height: 65%;
+            padding: 12px;
+            border: 1px solid #c7d5ec;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.9);
+            box-shadow: 0 8px 22px rgba(28,50,110,0.12);
+        }
+
+        .visual-window-top {
+            width: 45%;
+            height: 7px;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            background: #3156c8;
+        }
+
+        .visual-line {
+            height: 7px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            background: #dce5f3;
+        }
+
+        .visual-line.medium { width: 78%; }
+        .visual-line.short { width: 55%; }
+
+        .visual-circle {
+            position: absolute;
+            right: 12px;
+            bottom: 12px;
+            width: 42px;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #e6f1ff;
+            color: #3156c8;
+            font-size: 17px;
+        }
+
+        .feature-card.card-ai { border-left-color: #4389a8; }
+        .feature-card.card-ai .feature-icon { background: linear-gradient(135deg, #347fa4, #58a9c4); }
+        .feature-card.card-notes { border-left-color: #6935ca; }
+        .feature-card.card-notes .feature-icon { background: linear-gradient(135deg, #5929bb, #8848df); }
+        .feature-card.card-security { border-left-color: #4389a8; }
+        .feature-card.card-security .feature-icon { background: linear-gradient(135deg, #357ea2, #5aabc4); }
+
+        @media (max-width: 900px) {
+            .features-grid { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 600px) {
+            .feature-card { min-height: 390px; }
+            .feature-content { width: 100%; padding: 20px; }
+            .feature-visual { width: 100%; height: 145px; top: auto; bottom: 0; }
+            .feature-visual::before { width: 100%; height: 45%; background: linear-gradient(to bottom, #ffffff, rgba(255,255,255,0)); }
+        }
+
+
+        /* =====================================================
+           WORKFLOW
+        ====================================================== */
+
+        .workflow {
+
+            margin-top: 50px;
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 25px;
+        }
+
+
+        .step {
+
+            position: relative;
+
+            padding: 30px;
+
+            background: #ffffff;
+
+            border: 1px solid #e4e9f2;
+
+            border-radius: 20px;
+        }
+
+
+        .step-number {
+
+            width: 42px;
+
+            height: 42px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            margin: 0 auto 18px;
+
+            border-radius: 50%;
+
+            background: #3046b8;
+
+            color: white;
+
+            font-size: 14px;
+
+            font-weight: 700;
+        }
+
+
+        .step h3 {
+
+            margin-bottom: 10px;
+
+            color: #172554;
+
+            font-size: 16px;
+        }
+
+
+        .step p {
+
+            color: #667085;
+
+            font-size: 13px;
+
+            line-height: 1.7;
+        }
+
+
+        /* =====================================================
+           ABOUT
+        ====================================================== */
+
+        #apropos {
+
+            background: #f8faff;
+        }
+
+
+        /* =====================================================
+           DEMO
+        ====================================================== */
+
+        .demo-box {
+
+            margin: 50px auto 0;
+
+            max-width: 850px;
+
+            min-height: 330px;
+
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: center;
+
+            justify-content: center;
+
+            padding: 40px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #f5f8ff,
+                    #ffffff
+                );
+
+            border: 1px solid #dce5f5;
+
+            border-radius: 25px;
+
+            box-shadow:
+                0 15px 40px rgba(30, 65, 150, 0.07);
+        }
+
+
+        .demo-box i {
+
+            font-size: 50px;
+
+            color: #3156c8;
+
+            margin-bottom: 20px;
+        }
+
+
+        .demo-box h3 {
+
+            color: #172554;
+
+            margin-bottom: 10px;
+        }
+
+
+        .demo-box p {
+
+            max-width: 550px;
+
+            color: #667085;
+
+            line-height: 1.7;
+
+            font-size: 14px;
+        }
+
+
+        /* =====================================================
+           CONTACT
+        ====================================================== */
+
+        #contact {
+
+            background: #14245b;
+
+            color: #ffffff;
+        }
+
+
+        #contact .section-label {
+
+            color: #7fc8ff;
+        }
+
+
+        #contact .section-title {
+
+            color: #ffffff;
+        }
+
+
+        #contact .section-description {
+
+            color: #cbd5e1;
+        }
+
+
+        .contact-email {
+
+            display: inline-flex;
+
+            margin-top: 30px;
+
+            padding: 13px 25px;
+
+            border: 1px solid rgba(255,255,255,0.2);
+
+            border-radius: 30px;
+
+            color: #ffffff;
+
+            transition: 0.25s ease;
+        }
+
+
+        .contact-email:hover {
+
+            background: rgba(255,255,255,0.08);
+        }
+
+
+        /* =====================================================
+           FOOTER
+        ====================================================== */
+
+        footer {
+
+            padding: 25px 30px;
+
+            background: #0d173b;
+
+            color: #94a3b8;
+
+            text-align: center;
+
+            font-size: 12px;
+        }
+
+
+        footer strong {
+
+            color: #ffffff;
+        }
+
+
+        /* =====================================================
+           RESPONSIVE 1250PX
+        ====================================================== */
+
+        @media (max-width: 1250px) {
+
+            .header-inner {
+
+                width: calc(100% - 40px);
+
+                gap: 20px;
+            }
+
+
+            .brand img {
+
+                width: 245px;
+            }
+
+
+            .nav-link {
+
+                padding: 0 10px;
+
+                font-size: 12px;
+            }
+
+
+            .contact-btn {
+
+                padding: 0 20px;
+            }
+        }
+
+
+        /* =====================================================
+           RESPONSIVE 1050PX
+        ====================================================== */
+
+        @media (max-width: 1050px) {
+
+            .main-nav {
+
+                display: none;
+            }
+
+
+            .mobile-toggle {
+
+                display: flex;
+            }
+
+
+            .header-inner {
+
+                width: calc(100% - 35px);
+            }
+
+
+            .features-grid,
+            .workflow {
+
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+        }
+
+
+        /* =====================================================
+           RESPONSIVE 700PX
+        ====================================================== */
+
+        @media (max-width: 700px) {
+
+            .site-header {
+
+                height: 76px;
+            }
+
+
+            .header-inner {
+
+                width: calc(100% - 25px);
+            }
+
+
+            .brand img {
+
+                width: 215px;
+
+                max-height: 65px;
+            }
+
+
+            .mobile-menu {
+
+                top: 76px;
+            }
+
+
+            .hero {
+
+                padding-top: 76px;
+            }
+
+
+            .hero h1 {
+
+                font-size: 43px;
+
+                letter-spacing: -1px;
+            }
+
+
+            .hero p {
+
+                font-size: 15px;
+            }
+
+
+            .features-grid,
+            .workflow {
+
+                grid-template-columns: 1fr;
+            }
+
+
+            section:not(.hero) {
+
+                padding: 80px 20px;
+            }
+        }
+
+
+        /* =====================================================
+           RESPONSIVE 480PX
+        ====================================================== */
+
+        @media (max-width: 480px) {
+
+            .brand img {
+
+                width: 190px;
+            }
+
+
+            .mobile-toggle {
+
+                width: 42px;
+
+                height: 42px;
+            }
+
+
+            .hero h1 {
+
+                font-size: 37px;
+            }
+
+
+            .hero-buttons {
+
+                flex-direction: column;
+
+                width: 100%;
+            }
+
+
+            .primary-btn,
+            .secondary-btn {
+
+                width: 100%;
+
+                max-width: 280px;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+    <header class="site-header">
+
+        <div class="header-inner">
+
+
+            <!-- LOGO -->
+
+            <a
+                href="#accueil"
+                class="brand"
+                aria-label="MediNOTE AI"
+            >
+
+                <img
+                    src="medinote-logo.png"
+                    alt="MediNOTE AI"
+                >
+
+            </a>
+
+
+            <!-- DESKTOP NAVIGATION -->
+
+            <nav class="main-nav">
+
+
+                <a
+                    href="#accueil"
+                    class="nav-link active"
+                >
+                    Accueil
+                </a>
+
+
+                <a
+                    href="#fonctionnalites"
+                    class="nav-link"
+                >
+                    Fonctionnalités
+                </a>
+
+
+                <a
+                    href="#workflow"
+                    class="nav-link"
+                >
+                    Comment ça marche
+                </a>
+
+
+                <a
+                    href="#apropos"
+                    class="nav-link"
+                >
+                    À propos
+                </a>
+
+
+                <a
+                    href="#demo"
+                    class="nav-link"
+                >
+                    Démonstration
+                </a>
+
+
+                <!-- SOCIAL -->
+
+                <div class="social-links">
+
+
+                    <a
+                        href="https://www.linkedin.com/in/haitamtedbir/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="social-btn"
+                        aria-label="LinkedIn"
+                    >
+
+                        <i class="fa-brands fa-linkedin-in"></i>
+
+                    </a>
+
+
+                    <a
+                        href="https://twitter.com/haitamtedbir"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="social-btn"
+                        aria-label="X"
+                    >
+
+                        <i class="fa-brands fa-x-twitter"></i>
+
+                    </a>
+
+
+                </div>
+
+
+                <!-- CONTACT -->
+
+                <a
+                    href="mailto:haitam.tedbir@gmail.com"
+                    class="contact-btn"
+                >
+                    Contact
+                </a>
+
+            </nav>
+
+
+            <!-- MOBILE MENU BUTTON -->
+
+            <button
+                class="mobile-toggle"
+                id="mobileToggle"
+                aria-label="Ouvrir le menu"
+                aria-expanded="false"
+            >
+
+                <i class="fa-solid fa-bars"></i>
+
+            </button>
+
+        </div>
+
+
+        <!-- =================================================
+             MOBILE MENU
+        ================================================== -->
+
+        <div
+            class="mobile-menu"
+            id="mobileMenu"
+        >
+
+            <a href="#accueil">
+                Accueil
+            </a>
+
+            <a href="#fonctionnalites">
+                Fonctionnalités
+            </a>
+
+            <a href="#workflow">
+                Comment ça marche
+            </a>
+
+            <a href="#apropos">
+                À propos
+            </a>
+
+            <a href="#demo">
+                Démonstration
+            </a>
+
+            <a
+                href="#contact"
+                class="mobile-contact"
+            >
+                Contact
+            </a>
+
+        </div>
+
+    </header>
+
+
+
+    <!-- =====================================================
+         MAIN
+    ====================================================== -->
+
+    <main>
+
+
+        <!-- =================================================
+             HERO / ACCUEIL
+        ================================================== -->
+
+        <section
+            class="hero"
+            id="accueil"
+        >
+
+            <div class="hero-content">
+
+
+                <div class="hero-badge">
+
+                    <i class="fa-solid fa-microphone-lines"></i>
+
+                    Intelligence Artificielle &amp; Santé
+
+                </div>
+
+
+                <h1>
+
+                    Transformez vos
+
+                    <span>
+                        consultations
+                    </span>
+
+                    en notes médicales
+
+                </h1>
+
+
+                <p>
+
+                    MediNOTE AI transforme automatiquement
+                    l'audio d'une consultation médicale en
+                    notes structurées grâce à l'intelligence
+                    artificielle.
+
+                </p>
+
+
+                <div class="hero-buttons">
+
+
+                    <a
+                        href="#demo"
+                        class="primary-btn"
+                    >
+
+                        Voir la démonstration
+
+                        <i class="fa-solid fa-arrow-right"></i>
+
+                    </a>
+
+
+                    <a
+                        href="#workflow"
+                        class="secondary-btn"
+                    >
+
+                        Comment ça marche
+
+                        <i class="fa-solid fa-play"></i>
+
+                    </a>
+
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             FONCTIONNALITÉS / LA SOLUTION
+        ================================================== -->
+
+        <section id="fonctionnalites">
+
+            <div class="section-container">
+
+                <span class="section-label">
+                    La solution
+                </span>
+
+                <h2 class="section-title">
+                    Fonctionnalités
+                </h2>
+
+                <p class="section-description">
+                    Une solution intelligente pensée pour simplifier
+                    la documentation médicale et faire gagner du temps
+                    aux professionnels de santé.
+                </p>
+
+                <div class="features-grid">
+
+                    <!-- CARD 1 -->
+                    <article class="feature-card">
+                        <div class="feature-content">
+                            <div class="feature-icon">
+                                <i class="fa-solid fa-microphone"></i>
+                            </div>
+                            <h3>
+                                Audio médical
+                            </h3>
+                            <div class="feature-subtitle">
+                                Enregistrement & transcription
+                            </div>
+                            <p>
+                                Importez ou enregistrez facilement
+                                l'audio d'une consultation médicale.
+                            </p>
+                            <ul class="feature-list">
+                                <li><i class="fa-solid fa-circle-check"></i> Enregistrement audio</li>
+                                <li><i class="fa-solid fa-circle-check"></i> Import de fichiers audio</li>
+                                <li><i class="fa-solid fa-circle-check"></i> Transcription automatique</li>
+                                <li><i class="fa-solid fa-circle-check"></i> Traitement rapide</li>
+                            </ul>
+                        </div>
+                        <div class="feature-visual">
+                            <div class="visual-window">
+                                <div class="visual-window-top"></div>
+                                <div class="visual-line"></div>
+                                <div class="visual-line medium"></div>
+                                <div class="visual-line short"></div>
+                                <div class="visual-circle"><i class="fa-solid fa-waveform"></i></div>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- CARD 2 -->
+                    <article class="feature-card card-ai">
+                        <div class="feature-content">
+                            <div class="feature-icon">
+                                <i class="fa-solid fa-brain"></i>
+                            </div>
+                            <h3>
+                                Intelligence Artificielle
+                            </h3>
+                            <div class="feature-subtitle">
+                                Analyse intelligente
+                            </div>
+                            <p>
+                                L'IA analyse le contenu audio et
+                                identifie les informations médicales
+                                importantes.
+                            </p>
+                            <ul class="feature-list">
+                                <li><i class="fa-solid fa-circle-check"></i> Analyse du contenu médical</li>
+                                <li><i class="fa-solid fa-circle-check"></i> Extraction des informations clés</li>
+                                <li><i class="fa-solid fa-circle-check"></i> Identification des données importantes</li>
+                                <li><i class="fa-solid fa-circle-check"></i> Assistance intelligente</li>
+                            </ul>
+                        </div>
+                        <div class="feature-visual">
+                            <div class="visual-window">
+                                <div class="visual-window-top"></div>
+                                <div class="visual-line medium"></div>
+                                <div class="visual-line"></div>
+                                <div class="visual-line short"></div>
+                                <div class="visual-circle"><i class="fa-solid fa-brain"></i></div>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- CARD 3 -->
+                    <article class="feature-card card-notes">
+                        <div class="feature-content">
+                            <div class="feature-icon">
+                                <i class="fa-solid fa-file-medical"></i>
+                            </div>
+                            <h3>
+                                Notes structurées
+                            </h3>
+                            <div class="feature-subtitle">
+                                Génération automatique
+                            </div>
+                            <p>
+                                Obtenez une note médicale claire,
+                                organisée et prête à être vérifiée
+                                par le professionnel.
+                            </p>
+                            <ul class="feature-list">
+                                <li><i class="fa-solid fa-circle-check"></i> Résumé automatique</li>
+                                <li><i class="fa-solid fa-circle-check"></i> Notes structurées</li>
+                                <li><i class="fa-solid fa-circle-check"></i> Informations organisées</li>
+                                <li><i class="fa-solid fa-circle-check"></i> Note prête à être vérifiée</li>
+                            </ul>
+                        </div>
+                        <div class="feature-visual">
+                            <div class="visual-window">
+                                <div class="visual-window-top"></div>
+                                <div class="visual-line"></div>
+                                <div class="visual-line medium"></div>
+                                <div class="visual-line short"></div>
+                                <div class="visual-line medium"></div>
+                                <div class="visual-circle"><i class="fa-solid fa-file-medical"></i></div>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- CARD 4 -->
+                    <article class="feature-card card-security">
+                        <div class="feature-content">
+                            <div class="feature-icon">
+                                <i class="fa-solid fa-shield-halved"></i>
+                            </div>
+                            <h3>
+                                Sécurité & confidentialité
+                            </h3>
+                            <div class="feature-subtitle">
+                                Protection des données médicales
+                            </div>
+                            <p>
+                                Une solution pensée pour protéger
+                                les informations sensibles liées
+                                aux consultations médicales.
+                            </p>
+                            <ul class="feature-list">
+                                <li><i class="fa-solid fa-circle-check"></i> Protection des données</li>
+                                <li><i class="fa-solid fa-circle-check"></i> Confidentialité</li>
+                                <li><i class="fa-solid fa-circle-check"></i> Accès sécurisé</li>
+                                <li><i class="fa-solid fa-circle-check"></i> Données médicales protégées</li>
+                            </ul>
+                        </div>
+                        <div class="feature-visual">
+                            <div class="visual-window">
+                                <div class="visual-window-top"></div>
+                                <div class="visual-line medium"></div>
+                                <div class="visual-line"></div>
+                                <div class="visual-line short"></div>
+                                <div class="visual-circle"><i class="fa-solid fa-lock"></i></div>
+                            </div>
+                        </div>
+                    </article>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             WORKFLOW
+        ================================================== -->
+
+        <section id="workflow">
+
+            <div class="section-container">
+
+
+                <span class="section-label">
+                    Workflow
+                </span>
+
+
+                <h2 class="section-title">
+                    Comment ça marche ?
+                </h2>
+
+
+                <p class="section-description">
+
+                    Un processus simple en trois étapes
+                    pour transformer une conversation
+                    médicale en documentation structurée.
+
+                </p>
+
+
+                <div class="workflow">
+
+
+                    <!-- STEP 1 -->
+
+                    <div class="step">
+
+                        <div class="step-number">
+                            01
+                        </div>
+
+                        <h3>
+                            Enregistrer
+                        </h3>
+
+                        <p>
+
+                            Le professionnel enregistre ou
+                            importe l'audio de la consultation.
+
+                        </p>
+
+                    </div>
+
+
+                    <!-- STEP 2 -->
+
+                    <div class="step">
+
+                        <div class="step-number">
+                            02
+                        </div>
+
+                        <h3>
+                            Analyser
+                        </h3>
+
+                        <p>
+
+                            L'intelligence artificielle traite
+                            la transcription et extrait les
+                            informations pertinentes.
+
+                        </p>
+
+                    </div>
+
+
+                    <!-- STEP 3 -->
+
+                    <div class="step">
+
+                        <div class="step-number">
+                            03
+                        </div>
+
+                        <h3>
+                            Générer
+                        </h3>
+
+                        <p>
+
+                            Une note médicale structurée est
+                            générée et peut être vérifiée
+                            par le professionnel.
+
+                        </p>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             À PROPOS
+        ================================================== -->
+
+        <section id="apropos">
+
+            <div class="section-container">
+
+
+                <span class="section-label">
+                    Le projet
+                </span>
+
+
+                <h2 class="section-title">
+                    À propos de MediNOTE AI
+                </h2>
+
+
+                <p class="section-description">
+
+                    MediNOTE AI est un projet réalisé dans
+                    le cadre de mon stage, à l'intersection
+                    du développement web, de l'intelligence
+                    artificielle et de la santé numérique.
+
+                    <br><br>
+
+                    L'objectif est de concevoir une solution
+                    capable d'assister les professionnels
+                    de santé dans la création de leurs
+                    notes médicales.
+
+                </p>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             DÉMONSTRATION
+        ================================================== -->
+
+        <section id="demo">
+
+            <div class="section-container">
+
+
+                <span class="section-label">
+                    Prototype
+                </span>
+
+
+                <h2 class="section-title">
+                    Démonstration
+                </h2>
+
+
+                <p class="section-description">
+
+                    Découvrez le fonctionnement de MediNOTE AI
+                    à travers une démonstration du workflow
+                    Audio → IA → Note médicale.
+
+                </p>
+
+
+                <div class="demo-box">
+
+
+                    <i class="fa-solid fa-waveform-lines"></i>
+
+
+                    <h3>
+                        Votre démonstration ici
+                    </h3>
+
+
+                    <p>
+
+                        Cette zone peut accueillir votre
+                        interface d'enregistrement audio,
+                        votre simulation ou votre vidéo
+                        de présentation du projet.
+
+                    </p>
+
+
+                    <br>
+
+
+                    <a
+                        href="#"
+                        class="primary-btn"
+                    >
+
+                        Lancer la démo
+
+                        <i class="fa-solid fa-play"></i>
+
+                    </a>
+
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             CONTACT
+        ================================================== -->
+
+        <section id="contact">
+
+            <div class="section-container">
+
+
+                <span class="section-label">
+                    Contact
+                </span>
+
+
+                <h2 class="section-title">
+                    Une question sur MediNOTE AI ?
+                </h2>
+
+
+                <p class="section-description">
+
+                    Découvrez le projet, échangez autour
+                    de l'intelligence artificielle en santé
+                    et suivez son évolution.
+
+                </p>
+
+
+                <a
+                    href="mailto:haitam.tedbir@gmail.com"
+                    class="contact-email"
+                >
+
+                    <i
+                        class="fa-solid fa-envelope"
+                        style="margin-right: 10px;"
+                    ></i>
+
+                    Contactez-nous
+
+                </a>
+
+            </div>
+
+        </section>
+
+
+    </main>
+
+
+
+    <!-- =====================================================
+         FOOTER
+    ====================================================== -->
+
+    <footer>
+
+        <p>
+
+            © 2026
+
+            <strong>
+                MediNOTE AI
+            </strong>
+
+            — Projet IA &amp; Santé Numérique
+
+        </p>
+
+    </footer>
+
+
+
+    <!-- =====================================================
+         JAVASCRIPT
+    ====================================================== -->
+
+    <script>
+
+        /* =================================================
+           MOBILE MENU
+        ================================================== */
+
+        const mobileToggle =
+            document.getElementById("mobileToggle");
+
+        const mobileMenu =
+            document.getElementById("mobileMenu");
+
+
+        mobileToggle.addEventListener(
+            "click",
+            function () {
+
+                const isActive =
+                    mobileMenu.classList.toggle("active");
+
+
+                mobileToggle.setAttribute(
+                    "aria-expanded",
+                    isActive
+                );
+
+
+                const icon =
+                    mobileToggle.querySelector("i");
+
+
+                if (isActive) {
+
+                    icon.classList.remove(
+                        "fa-bars"
+                    );
+
+                    icon.classList.add(
+                        "fa-xmark"
+                    );
+
+                } else {
+
+                    icon.classList.remove(
+                        "fa-xmark"
+                    );
+
+                    icon.classList.add(
+                        "fa-bars"
+                    );
+
+                }
+
+            }
+        );
+
+
+        /* =================================================
+           CLOSE MOBILE MENU AFTER CLICK
+        ================================================== */
+
+        const mobileLinks =
+            mobileMenu.querySelectorAll("a");
+
+
+        mobileLinks.forEach(function (link) {
+
+            link.addEventListener(
+                "click",
+                function () {
+
+                    mobileMenu.classList.remove(
+                        "active"
+                    );
+
+
+                    mobileToggle.setAttribute(
+                        "aria-expanded",
+                        "false"
+                    );
+
+
+                    const icon =
+                        mobileToggle.querySelector("i");
+
+
+                    icon.classList.remove(
+                        "fa-xmark"
+                    );
+
+
+                    icon.classList.add(
+                        "fa-bars"
+                    );
+
+                }
+            );
+
+        });
+
+
+        /* =================================================
+           CLOSE MENU WHEN CLICKING OUTSIDE
+        ================================================== */
+
+        document.addEventListener(
+            "click",
+            function (event) {
+
+                if (
+                    !event.target.closest(
+                        ".site-header"
+                    )
+                ) {
+
+                    mobileMenu.classList.remove(
+                        "active"
+                    );
+
+
+                    mobileToggle.setAttribute(
+                        "aria-expanded",
+                        "false"
+                    );
+
+
+                    const icon =
+                        mobileToggle.querySelector("i");
+
+
+                    icon.classList.remove(
+                        "fa-xmark"
+                    );
+
+
+                    icon.classList.add(
+                        "fa-bars"
+                    );
+
+                }
+
+            }
+        );
+
+
+        /* =================================================
+           ACTIVE NAVIGATION
+        ================================================== */
+
+        const sections =
+            document.querySelectorAll(
+                "section[id]"
+            );
+
+
+        const navLinks =
+            document.querySelectorAll(
+                ".main-nav .nav-link"
+            );
+
+
+        function updateActiveLink() {
+
+            let currentSection = "";
+
+
+            sections.forEach(function (section) {
+
+                const sectionTop =
+                    section.offsetTop - 150;
+
+
+                const sectionHeight =
+                    section.offsetHeight;
+
+
+                if (
+                    window.scrollY >= sectionTop &&
+                    window.scrollY <
+                    sectionTop + sectionHeight
+                ) {
+
+                    currentSection =
+                        section.getAttribute("id");
+
+                }
+
+            });
+
+
+            navLinks.forEach(function (link) {
+
+                link.classList.remove(
+                    "active"
+                );
+
+
+                const target =
+                    link.getAttribute("href");
+
+
+                if (
+                    target ===
+                    "#" + currentSection
+                ) {
+
+                    link.classList.add(
+                        "active"
+                    );
+
+                }
+
+            });
+
+        }
+
+
+        window.addEventListener(
+            "scroll",
+            updateActiveLink
+        );
+
+
+        window.addEventListener(
+            "load",
+            updateActiveLink
+        );
+
+
+    </script>
+
+
+</body>
+
+</html>
