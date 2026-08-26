@@ -34,27 +34,22 @@ echo [2/4] Mise a jour de pip...
 ".venv\Scripts\python.exe" -m pip install --upgrade pip wheel "setuptools<81"
 if errorlevel 1 goto :install_error
 
-echo [3/4] Installation de Faster-Whisper, EDS-NLP, Pydantic et Flask...
+echo [3/4] Installation de Gemini, Pydantic et Flask...
+echo Suppression des anciens composants locaux bloques par Windows...
+".venv\Scripts\python.exe" -m pip uninstall -y faster-whisper av edsnlp spacy thinc preshed cymem murmurhash >nul 2>nul
 ".venv\Scripts\python.exe" -m pip install -r requirements.txt
 if errorlevel 1 goto :install_error
 
-where ollama >nul 2>nul
-if errorlevel 1 (
+if not exist ".env" (
+    echo [4/4] Configuration de Gemini...
+    copy /y ".env.example" ".env" >nul
     echo.
-    echo [ACTION REQUISE] Ollama n'est pas installe.
-    echo La page officielle va s'ouvrir. Installez Ollama, puis relancez ce fichier.
-    start "" "https://ollama.com/download/windows"
+    echo Ajoutez votre NOUVELLE cle Google AI Studio dans le fichier .env.
+    echo N'utilisez pas une cle deja publiee ou partagee.
+    start "" notepad ".env"
     pause
-    exit /b 1
-)
-
-echo [4/4] Telechargement du modele Qwen3 8B...
-ollama pull qwen3:8b
-if errorlevel 1 (
-    echo [ERREUR] Le modele Qwen3 8B n'a pas pu etre telecharge.
-    echo Verifiez votre connexion et que l'application Ollama est lancee.
-    pause
-    exit /b 1
+) else (
+    echo [4/4] Configuration Gemini deja presente.
 )
 
 echo.

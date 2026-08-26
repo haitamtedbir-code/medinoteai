@@ -4235,6 +4235,952 @@ footer {
     }
 }
 
+/* =========================================================
+   ASSISTANT MÉDICAL FLOTTANT
+========================================================= */
+
+.medical-chat-launcher {
+    position: fixed;
+    right: 24px;
+    bottom: 24px;
+    z-index: 10020;
+    width: 60px;
+    height: 60px;
+    border: 0;
+    border-radius: 50%;
+    background: #ffffff;
+    color: #fff;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    box-shadow: 0 14px 34px rgba(49, 86, 200, .3);
+    overflow: visible;
+    font-size: 23px;
+    transition: transform .2s ease, background .2s ease;
+}
+
+.medical-chat-launcher:hover {
+    background: #ffffff;
+    transform: translateY(-2px);
+}
+
+.medical-chat-launcher-icon {
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: center;
+    background: #f7f7f7;
+}
+
+.medical-chat-launcher-close {
+    display: none;
+    color: #3156c8;
+}
+
+.medical-chat-launcher[aria-expanded="true"] .medical-chat-launcher-icon {
+    display: none;
+}
+
+.medical-chat-launcher[aria-expanded="true"] .medical-chat-launcher-close {
+    display: block;
+}
+
+.medical-chat-launcher[aria-expanded="true"] .chat-status-dot {
+    display: none;
+}
+
+.medical-chat-launcher .chat-status-dot {
+    position: absolute;
+    top: 3px;
+    right: 3px;
+    width: 13px;
+    height: 13px;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    background: #22a06b;
+}
+
+.medical-chat-invite {
+    position: fixed;
+    right: 96px;
+    bottom: 28px;
+    z-index: 10019;
+    width: min(330px, calc(100vw - 130px));
+    padding: 13px 16px;
+    border: 1px solid #e0e6f0;
+    border-radius: 16px 16px 4px 16px;
+    background: #ffffff;
+    color: #263244;
+    box-shadow: 0 12px 34px rgba(16, 24, 40, .14);
+    font-size: 12px;
+    line-height: 1.5;
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0);
+    transition: opacity .2s ease, transform .2s ease, visibility .2s;
+}
+
+.medical-chat-invite.hidden {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(10px);
+}
+
+.medical-chat-panel {
+    position: fixed;
+    right: 24px;
+    bottom: 96px;
+    z-index: 10020;
+    width: min(390px, calc(100vw - 32px));
+    height: min(600px, calc(100vh - 126px));
+    border: 1px solid #dfe6f2;
+    border-radius: 20px;
+    background: #fff;
+    box-shadow: 0 24px 70px rgba(16, 24, 40, .2);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(14px) scale(.98);
+    transform-origin: bottom right;
+    transition: opacity .2s ease, transform .2s ease, visibility .2s;
+}
+
+.medical-chat-panel.open {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+}
+
+.medical-chat-header {
+    padding: 16px 17px;
+    background: #f7f9fd;
+    border-bottom: 1px solid #e8edf5;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.medical-chat-avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 13px;
+    background: #e8edff;
+    color: #3156c8;
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+    overflow: hidden;
+}
+
+.medical-chat-avatar img {
+    width: 38px;
+    height: 38px;
+    border-radius: 11px;
+    object-fit: cover;
+    object-position: center;
+}
+
+.medical-chat-title {
+    flex: 1;
+    min-width: 0;
+}
+
+.medical-chat-title strong,
+.medical-chat-title span {
+    display: block;
+}
+
+.medical-chat-title strong {
+    font-size: 14px;
+    color: #182230;
+}
+
+.medical-chat-title span {
+    margin-top: 2px;
+    color: #667085;
+    font-size: 11px;
+}
+
+.medical-chat-header button {
+    width: 34px;
+    height: 34px;
+    border: 0;
+    border-radius: 10px;
+    color: #667085;
+    background: transparent;
+    cursor: pointer;
+}
+
+.medical-chat-header button:hover {
+    color: #182230;
+    background: #e9eef7;
+}
+
+.medical-chat-messages {
+    flex: 1;
+    min-height: 0;
+    padding: 18px 15px;
+    overflow-y: auto;
+    background: #fff;
+}
+
+.medical-chat-message {
+    display: flex;
+    margin-bottom: 13px;
+}
+
+.medical-chat-message.user {
+    justify-content: flex-end;
+}
+
+.medical-chat-bubble {
+    max-width: 84%;
+    padding: 11px 13px;
+    border-radius: 15px 15px 15px 4px;
+    background: #f0f3f8;
+    color: #263244;
+    font-size: 13px;
+    line-height: 1.55;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.medical-chat-message.user .medical-chat-bubble {
+    border-radius: 15px 15px 4px 15px;
+    background: #3156c8;
+    color: #fff;
+}
+
+.medical-chat-message.error .medical-chat-bubble {
+    background: #fff1f0;
+    color: #b42318;
+}
+
+.medical-chat-typing {
+    display: inline-flex;
+    gap: 4px;
+    align-items: center;
+}
+
+.medical-chat-typing i {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #8994a5;
+    animation: chatTyping 1s infinite alternate;
+}
+
+.medical-chat-typing i:nth-child(2) { animation-delay: .18s; }
+.medical-chat-typing i:nth-child(3) { animation-delay: .36s; }
+
+@keyframes chatTyping {
+    to { opacity: .28; transform: translateY(-2px); }
+}
+
+.medical-chat-warning {
+    padding: 8px 14px;
+    border-top: 1px solid #edf0f5;
+    color: #7a4b00;
+    background: #fffaf0;
+    font-size: 10px;
+    line-height: 1.4;
+}
+
+.medical-chat-form {
+    padding: 12px;
+    border-top: 1px solid #e8edf5;
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+    background: #fff;
+}
+
+.medical-chat-input {
+    flex: 1;
+    min-height: 44px;
+    max-height: 110px;
+    resize: none;
+    padding: 11px 13px;
+    border: 1px solid #d7deea;
+    border-radius: 13px;
+    outline: 0;
+    color: #182230;
+    background: #fff;
+    font-size: 13px;
+    line-height: 1.45;
+}
+
+.medical-chat-input:focus {
+    border-color: #3156c8;
+    box-shadow: 0 0 0 3px rgba(49, 86, 200, .1);
+}
+
+.medical-chat-send {
+    width: 44px;
+    height: 44px;
+    flex: 0 0 auto;
+    border: 0;
+    border-radius: 13px;
+    color: #fff;
+    background: #3156c8;
+    cursor: pointer;
+}
+
+.medical-chat-send:disabled {
+    cursor: not-allowed;
+    opacity: .5;
+}
+
+@media (max-width: 520px) {
+    .medical-chat-launcher {
+        right: 16px;
+        bottom: 16px;
+    }
+
+    .medical-chat-invite {
+        right: 86px;
+        bottom: 20px;
+        width: min(270px, calc(100vw - 112px));
+        padding: 11px 13px;
+        font-size: 11px;
+    }
+
+    .medical-chat-panel {
+        right: 16px;
+        bottom: 88px;
+        height: min(610px, calc(100vh - 112px));
+    }
+}
+
+/* =========================================================
+   MEDINOTE CLINICAL WORKSPACE — 2026 REDESIGN
+========================================================= */
+
+.dashboard-view {
+    --clinical-ink: #172033;
+    --clinical-muted: #687386;
+    --clinical-line: #e4e8f0;
+    --clinical-soft: #f4f5fb;
+    --clinical-accent: #4f46d8;
+    --clinical-accent-dark: #3f37bd;
+    padding-top: 82px;
+    background: #f5f7fa;
+}
+
+.dashboard-container {
+    width: min(1320px, calc(100% - 48px));
+    padding: 34px 0 72px;
+}
+
+.dashboard-header {
+    align-items: flex-end;
+    margin-bottom: 24px;
+}
+
+.dashboard-title-area {
+    align-items: center;
+    gap: 16px;
+}
+
+.dashboard-title-icon {
+    position: relative;
+    width: 58px;
+    height: 58px;
+    flex: 0 0 auto;
+    border: 1px solid #242d45;
+    border-radius: 18px;
+    background: #172033;
+    color: #ffffff;
+    box-shadow: 0 12px 25px rgba(23, 32, 51, .14);
+    font-size: 23px;
+}
+
+.dashboard-title-icon::after {
+    position: absolute;
+    right: -3px;
+    bottom: -3px;
+    width: 14px;
+    height: 14px;
+    border: 3px solid #f5f7fa;
+    border-radius: 50%;
+    background: #4f46d8;
+    content: "";
+}
+
+.dashboard-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin-bottom: 5px;
+    color: var(--clinical-accent);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1.25px;
+    text-transform: uppercase;
+}
+
+.dashboard-title h1 {
+    margin: 0 0 4px;
+    color: var(--clinical-ink);
+    font-size: clamp(23px, 2.3vw, 32px);
+    line-height: 1.12;
+    letter-spacing: -.7px;
+}
+
+.dashboard-title p {
+    max-width: 650px;
+    color: var(--clinical-muted);
+    font-size: 11.5px;
+    line-height: 1.55;
+}
+
+.back-btn {
+    min-height: 42px;
+    padding: 10px 16px;
+    border: 1px solid var(--clinical-line);
+    border-radius: 11px;
+    background: #ffffff;
+    color: #445066;
+    box-shadow: 0 4px 12px rgba(23, 32, 51, .035);
+}
+
+.back-btn:hover {
+    border-color: #b9bde8;
+    color: var(--clinical-accent);
+    transform: translateY(-1px);
+}
+
+.clinical-workflow {
+    grid-template-columns: repeat(7, minmax(112px, 1fr));
+    gap: 0;
+    margin-bottom: 18px;
+    padding: 14px 16px;
+    overflow-x: auto;
+    border: 1px solid var(--clinical-line);
+    border-radius: 16px;
+    background: #ffffff;
+    box-shadow: 0 8px 24px rgba(23, 32, 51, .04);
+    scrollbar-width: thin;
+}
+
+.workflow-stage {
+    min-height: 62px;
+    justify-content: center;
+    gap: 5px;
+}
+
+.workflow-stage:not(:last-child)::after {
+    top: 22px;
+    left: calc(50% + 22px);
+    width: calc(100% - 44px);
+    height: 1px;
+    background: #e2e6ee;
+}
+
+.workflow-stage-icon {
+    width: 36px;
+    height: 36px;
+    border-color: #e1e5ed;
+    border-radius: 11px;
+    background: #f7f8fa;
+    color: #778195;
+    font-size: 12px;
+}
+
+.workflow-stage strong {
+    color: #586477;
+    font-size: 8.5px;
+    font-weight: 600;
+}
+
+.workflow-stage small {
+    display: none;
+}
+
+.workflow-stage.active .workflow-stage-icon {
+    border-color: var(--clinical-accent);
+    background: var(--clinical-accent);
+    box-shadow: 0 7px 14px rgba(79, 70, 216, .19);
+}
+
+.workflow-stage.active strong {
+    color: var(--clinical-ink);
+    font-weight: 700;
+}
+
+.workflow-stage.completed .workflow-stage-icon {
+    border-color: #cbe7d6;
+    background: #edf8f1;
+    color: #37865a;
+}
+
+.workflow-stage.completed:not(:last-child)::after {
+    background: #78b895;
+}
+
+.dashboard-grid {
+    grid-template-columns: minmax(0, 1.62fr) minmax(300px, .72fr);
+    gap: 18px;
+    align-items: start;
+}
+
+.dashboard-grid > .dashboard-panel {
+    padding: 24px;
+    border: 1px solid var(--clinical-line);
+    border-radius: 20px;
+    background: #ffffff;
+    box-shadow: 0 14px 38px rgba(23, 32, 51, .055);
+}
+
+.dashboard-grid > .dashboard-panel .panel-header {
+    margin-bottom: 16px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid #edf0f4;
+}
+
+.dashboard-grid > .dashboard-panel .panel-header h2 {
+    color: var(--clinical-ink);
+    font-size: 14px;
+    letter-spacing: -.15px;
+}
+
+.dashboard-grid > .dashboard-panel .panel-header h2 i {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    background: #efeffd;
+    color: var(--clinical-accent);
+}
+
+.dashboard-grid > .dashboard-panel .panel-header > span {
+    padding: 5px 8px;
+    border: 1px solid #e7e8f1;
+    border-radius: 999px;
+    background: #f8f8fb;
+    color: #858da0;
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: .35px;
+    text-transform: uppercase;
+}
+
+.dashboard-view .upload-area {
+    grid-template-columns: 56px minmax(0, 1fr) auto;
+    min-height: 118px;
+    padding: 20px;
+    border: 1.5px dashed #cdd2e0;
+    border-radius: 16px;
+    background: #f8f9fc;
+    transition: border-color .2s ease, background .2s ease, transform .2s ease;
+}
+
+.dashboard-view .upload-area:hover {
+    border-color: #9fa4de;
+    background: #f5f5fc;
+    transform: translateY(-1px);
+}
+
+.dashboard-view .upload-icon {
+    width: 54px;
+    height: 54px;
+    border: 1px solid #dedff5;
+    border-radius: 15px;
+    background: #ececfc;
+    color: var(--clinical-accent);
+    font-size: 19px;
+}
+
+.dashboard-view .upload-area h3 {
+    color: var(--clinical-ink);
+    font-size: 12.5px;
+}
+
+.dashboard-view .upload-area p {
+    color: #8590a3;
+    font-size: 9px;
+}
+
+.dashboard-view .upload-btn {
+    min-height: 40px;
+    padding: 10px 15px;
+    border-radius: 10px;
+    background: var(--clinical-accent);
+    box-shadow: 0 7px 15px rgba(79, 70, 216, .16);
+}
+
+.dashboard-view .upload-btn:hover {
+    background: var(--clinical-accent-dark);
+}
+
+.dashboard-view .record-area {
+    min-height: 66px;
+    margin-top: 12px;
+    padding: 10px 14px;
+    border-color: var(--clinical-line);
+    border-radius: 14px;
+    background: #ffffff;
+}
+
+.dashboard-view .record-btn {
+    width: 44px;
+    height: 44px;
+    flex-basis: 44px;
+    border: 1px solid #4038bd;
+    background: var(--clinical-accent);
+    box-shadow: 0 7px 15px rgba(79, 70, 216, .18);
+}
+
+.dashboard-view .record-btn:hover {
+    background: var(--clinical-accent-dark);
+    transform: scale(1.03);
+}
+
+.dashboard-view .record-text {
+    color: #596579;
+    font-size: 10.5px;
+    font-weight: 600;
+}
+
+.dashboard-view .transcription-box {
+    margin-top: 12px;
+    padding: 14px;
+    border: 1px solid var(--clinical-line);
+    border-radius: 15px;
+    background: #f8f9fb;
+}
+
+.transcription-header {
+    min-height: 27px;
+    gap: 12px;
+}
+
+.transcription-header strong {
+    color: var(--clinical-ink);
+    font-size: 10.5px;
+}
+
+.transcription-header strong i {
+    color: var(--clinical-accent);
+}
+
+.transcription-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 8px;
+    border-radius: 999px;
+    background: #eef1f5;
+    color: #697487;
+    font-size: 8.5px;
+    font-weight: 600;
+}
+
+.transcription-status::before {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #98a1b2;
+    content: "";
+}
+
+.transcription-status.listening {
+    background: #edf8f1;
+    color: #367f56;
+}
+
+.transcription-status.listening::before {
+    background: #43a46c;
+    box-shadow: 0 0 0 3px rgba(67, 164, 108, .12);
+}
+
+.transcription-status.error {
+    background: #fff1f1;
+    color: #b54040;
+}
+
+.transcription-status.error::before {
+    background: #d95757;
+}
+
+.dashboard-view .transcription-text {
+    min-height: 150px;
+    margin-top: 9px;
+    padding: 14px;
+    border: 1px solid #dfe3eb;
+    border-radius: 12px;
+    background: #ffffff;
+    color: #303b4d;
+    font-size: 11px;
+    line-height: 1.7;
+}
+
+.dashboard-view .transcription-text:focus {
+    border-color: #9ea4e2;
+    box-shadow: 0 0 0 3px rgba(79, 70, 216, .08);
+}
+
+.clear-transcription {
+    min-height: 34px;
+    padding: 7px 10px;
+    border-radius: 9px;
+    background: #ffffff;
+}
+
+.dashboard-view .dashboard-audio {
+    margin-top: 12px;
+    padding: 14px;
+    border: 1px solid var(--clinical-line);
+    border-radius: 15px;
+    background: #f8f9fb;
+}
+
+.dashboard-view .dashboard-audio audio {
+    height: 44px;
+    border-radius: 10px;
+}
+
+.transcribe-file-btn {
+    min-height: 43px;
+    border-color: #d9daf2;
+    border-radius: 10px;
+    background: #eeeeff;
+    color: var(--clinical-accent-dark);
+}
+
+.transcribe-file-btn:hover:not(:disabled) {
+    border-color: #bfc1e8;
+    background: #e6e6fb;
+}
+
+.file-transcription-progress span,
+.progress-fill {
+    background: var(--clinical-accent);
+}
+
+.dashboard-view .process-btn,
+.dashboard-view .process-btn:not(:disabled) {
+    min-height: 50px;
+    margin-top: 14px;
+    border-radius: 12px;
+    background: var(--clinical-accent);
+    box-shadow: 0 9px 20px rgba(79, 70, 216, .18);
+    font-size: 11px;
+}
+
+.dashboard-view .process-btn:hover:not(:disabled) {
+    background: var(--clinical-accent-dark);
+    transform: translateY(-1px);
+}
+
+.dashboard-view .process-btn:disabled {
+    border-color: #e1e4eb;
+    background: #e9ebf0;
+    box-shadow: none;
+    color: #98a1b1;
+}
+
+.workflow-side-panel {
+    position: sticky;
+    top: 104px;
+    gap: 12px;
+}
+
+.patient-card,
+.ai-progress-card,
+.privacy-card {
+    padding: 18px;
+    border: 1px solid var(--clinical-line);
+    border-radius: 16px;
+    box-shadow: 0 10px 28px rgba(23, 32, 51, .045);
+}
+
+.side-card-icon {
+    border: 1px solid #e1e2f4;
+    background: #efeffd;
+    color: var(--clinical-accent);
+}
+
+.side-card-title h3 {
+    color: var(--clinical-ink);
+    font-size: 12px;
+}
+
+.side-step-number {
+    padding: 4px 7px;
+    border-radius: 999px;
+    background: #f4f5f8;
+    color: #818a9c;
+}
+
+.patient-field label {
+    color: #5f6a7d;
+    font-size: 9px;
+}
+
+.patient-field input {
+    height: 42px;
+    border-color: #e0e4ec;
+    border-radius: 10px;
+    background: #fafbfc;
+    color: var(--clinical-ink);
+}
+
+.patient-field input:focus {
+    border-color: #9ea4e2;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(79, 70, 216, .07);
+}
+
+.ai-progress-card p {
+    color: #737e90;
+    line-height: 1.6;
+}
+
+.progress-bar {
+    height: 7px;
+    background: #eceef3;
+}
+
+.privacy-card {
+    border-color: #dce9e1;
+    background: #f5faf7;
+}
+
+.privacy-card > i {
+    color: #39845b;
+}
+
+.privacy-card strong {
+    color: #305e44;
+}
+
+.privacy-card p {
+    color: #62776b;
+}
+
+@media (max-width: 980px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .workflow-side-panel {
+        position: static;
+        grid-template-columns: minmax(0, 1.4fr) minmax(260px, .8fr);
+    }
+
+    .privacy-card {
+        grid-column: 1 / -1;
+    }
+}
+
+@media (max-width: 680px) {
+    .dashboard-container {
+        width: calc(100% - 24px);
+        padding-top: 22px;
+    }
+
+    .dashboard-header {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .dashboard-title-area {
+        align-items: flex-start;
+    }
+
+    .dashboard-title-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 15px;
+        font-size: 19px;
+    }
+
+    .dashboard-eyebrow {
+        font-size: 7.5px;
+        letter-spacing: .85px;
+    }
+
+    .dashboard-title h1 {
+        font-size: 23px;
+    }
+
+    .back-btn {
+        align-self: flex-start;
+    }
+
+    .clinical-workflow {
+        display: grid;
+        grid-template-columns: repeat(7, 105px);
+        padding: 12px;
+    }
+
+    .workflow-stage {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .workflow-stage:not(:last-child)::after {
+        display: block;
+    }
+
+    .dashboard-grid > .dashboard-panel {
+        padding: 16px;
+        border-radius: 17px;
+    }
+
+    .dashboard-view .upload-area {
+        display: flex;
+        min-height: 208px;
+        padding: 22px 16px;
+        gap: 7px;
+    }
+
+    .dashboard-view .upload-btn {
+        width: 100%;
+        margin-top: 8px;
+        justify-content: center;
+    }
+
+    .dashboard-view .record-area {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .dashboard-view .record-btn {
+        align-self: center;
+    }
+
+    .dashboard-view .record-text {
+        width: 100%;
+        text-align: center;
+    }
+
+    .transcription-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .transcription-status {
+        max-width: 100%;
+        line-height: 1.4;
+    }
+
+    .dashboard-view .transcription-text {
+        min-height: 180px;
+    }
+
+    .workflow-side-panel {
+        grid-template-columns: 1fr;
+    }
+
+    .privacy-card {
+        grid-column: auto;
+    }
+}
+
 </style>
 
 </head>
@@ -5225,12 +6171,17 @@ footer {
 
                 <div class="dashboard-title">
 
+                    <span class="dashboard-eyebrow">
+                        <i class="fa-solid fa-shield-heart"></i>
+                        Espace clinique assisté par IA
+                    </span>
+
                     <h1>
-                        MediNOTE AI Dashboard
+                        Nouvelle consultation
                     </h1>
 
                     <p>
-                        Patient → Audio → Transcription IA → Note → Validation → Export
+                        Transformez la conversation en note médicale structurée, prête à être révisée.
                     </p>
 
                 </div>
@@ -5316,7 +6267,7 @@ footer {
 
                     <h2>
                         <i class="fa-solid fa-microphone"></i>
-                        Enregistrement de la consultation
+                        Audio et transcription
                     </h2>
 
                     <span>
@@ -5344,7 +6295,7 @@ footer {
                     </h3>
 
                     <p>
-                        MP3, WAV, M4A — jusqu'à 50 MB
+                        MP3, WAV, M4A, WEBM ou FLAC · 50 MB maximum
                     </p>
 
                     <span class="upload-btn">
@@ -5384,7 +6335,7 @@ footer {
                         class="record-text"
                         id="recordText"
                     >
-                        Ou enregistrer une consultation
+                        Enregistrer la consultation en direct
                     </span>
 
                 </div>
@@ -5401,7 +6352,7 @@ footer {
 
                         <strong>
                             <i class="fa-solid fa-wave-square"></i>
-                            Transcription en direct
+                            Transcription médicale
                         </strong>
 
                         <span
@@ -5543,7 +6494,7 @@ footer {
                         <span class="side-step-number">ÉTAPES 03–04</span>
                     </div>
 
-                    <p>L'IA transcrit la consultation et prépare une note médicale structurée.</p>
+                    <p>Gemini transcrit la consultation et prépare un brouillon structuré pour révision.</p>
 
                     <div class="progress-area">
                         <div class="progress-top">
@@ -5560,8 +6511,8 @@ footer {
                 <div class="privacy-card">
                     <i class="fa-solid fa-shield-halved"></i>
                     <div>
-                        <strong>Données médicales protégées</strong>
-                        <p>Le médecin garde le contrôle final avant toute validation ou exportation.</p>
+                        <strong>Contrôle médical obligatoire</strong>
+                        <p>Évitez les données identifiantes. Le médecin doit réviser la note avant validation.</p>
                     </div>
                 </div>
 
@@ -6054,6 +7005,85 @@ footer {
     </div>
 
 </footer>
+
+
+<!-- =========================================================
+     ASSISTANT MÉDICAL GEMINI
+========================================================= -->
+
+<div class="medical-chat-invite" id="medicalChatInvite" role="status">
+    Bonjour, je suis l’assistant MediNOTE AI. Comment puis-je vous aider ?
+</div>
+
+<button
+    class="medical-chat-launcher"
+    id="medicalChatLauncher"
+    type="button"
+    aria-label="Ouvrir l'assistant médical"
+    aria-controls="medicalChatPanel"
+    aria-expanded="false"
+>
+    <img
+        class="medical-chat-launcher-icon"
+        src="doctor-chat-icon.png"
+        alt=""
+        aria-hidden="true"
+    >
+    <i class="fa-solid fa-xmark medical-chat-launcher-close" aria-hidden="true"></i>
+    <span class="chat-status-dot" aria-hidden="true"></span>
+</button>
+
+<aside
+    class="medical-chat-panel"
+    id="medicalChatPanel"
+    role="dialog"
+    aria-modal="false"
+    aria-labelledby="medicalChatHeading"
+    aria-hidden="true"
+>
+    <div class="medical-chat-header">
+        <div class="medical-chat-avatar" aria-hidden="true">
+            <img src="doctor-chat-icon.png" alt="">
+        </div>
+        <div class="medical-chat-title">
+            <strong id="medicalChatHeading">Assistant MediNOTE AI</strong>
+            <span id="medicalChatSubtitle">Information médicale générale</span>
+        </div>
+        <button id="medicalChatClear" type="button" aria-label="Effacer la conversation" title="Effacer">
+            <i class="fa-solid fa-trash-can" aria-hidden="true"></i>
+        </button>
+        <button id="medicalChatClose" type="button" aria-label="Fermer le chat" title="Fermer">
+            <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+    </div>
+
+    <div
+        class="medical-chat-messages"
+        id="medicalChatMessages"
+        role="log"
+        aria-live="polite"
+        aria-relevant="additions"
+    ></div>
+
+    <p class="medical-chat-warning" id="medicalChatWarning">
+        Ne partagez aucune donnée permettant d’identifier un patient. Cet assistant ne remplace pas un médecin.
+    </p>
+
+    <form class="medical-chat-form" id="medicalChatForm">
+        <textarea
+            class="medical-chat-input"
+            id="medicalChatInput"
+            rows="1"
+            maxlength="4000"
+            placeholder="Décrivez votre question de santé…"
+            aria-label="Votre message"
+            required
+        ></textarea>
+        <button class="medical-chat-send" id="medicalChatSend" type="submit" aria-label="Envoyer">
+            <i class="fa-solid fa-paper-plane" aria-hidden="true"></i>
+        </button>
+    </form>
+</aside>
 
 
 
@@ -7139,8 +8169,8 @@ transcribeFileBtn.addEventListener("click", async () => {
     transcriptionStatus.classList.remove("error", "listening");
 
     transcriptionStatus.textContent = dashboardMessage(
-        "Whisper analyse le fichier...",
-        "Whisper is analyzing the file..."
+        "Gemini transcrit le fichier...",
+        "Gemini is transcribing the file..."
     );
 
     const formData = new FormData();
@@ -7512,13 +8542,13 @@ processBtn.addEventListener("click", async () => {
     updateGenerationProgress(15, "Préparation de la transcription...", "Preparing transcript...");
 
     try {
-        updateGenerationProgress(40, "Détection clinique EDS-NLP...", "EDS-NLP clinical detection...");
+        updateGenerationProgress(40, "Analyse clinique Gemini...", "Gemini clinical analysis...");
 
         const generationPromise = buildMedicalNoteFromTranscript();
 
         window.setTimeout(() => {
             if (!noteGenerated) {
-                updateGenerationProgress(70, "Analyse locale Qwen3...", "Local Qwen3 analysis...");
+                updateGenerationProgress(70, "Analyse médicale Gemini...", "Gemini medical analysis...");
             }
         }, 800);
 
@@ -8007,6 +9037,9 @@ document
         "Note générée": "Note generated",
         "Lancer la démo": "Launch demo",
         "MediNOTE AI Dashboard": "MediNOTE AI Dashboard",
+        "Espace clinique assisté par IA": "AI-assisted clinical workspace",
+        "Nouvelle consultation": "New consultation",
+        "Transformez la conversation en note médicale structurée, prête à être révisée.": "Turn the conversation into a structured medical note ready for review.",
         "Patient → Audio → Transcription IA → Note → Validation → Export": "Patient → Audio → AI transcription → Note → Validation → Export",
         "Audio médical → IA → Note médicale structurée": "Medical audio → AI → Structured medical note",
         "Retour au site": "Back to website",
@@ -8017,6 +9050,7 @@ document
         "Validation": "Validation",
         "Exporter / Sauvegarder": "Export / Save",
         "Enregistrement de la consultation": "Consultation recording",
+        "Audio et transcription": "Audio and transcription",
         "Étapes 02–03": "Steps 02–03",
         "Audio de consultation": "Consultation audio",
         "Étape 01": "Step 01",
@@ -8028,15 +9062,21 @@ document
         "Traitement IA": "AI processing",
         "ÉTAPES 03–04": "STEPS 03–04",
         "L'IA transcrit la consultation et prépare une note médicale structurée.": "AI transcribes the consultation and prepares a structured medical note.",
+        "Gemini transcrit la consultation et prépare un brouillon structuré pour révision.": "Gemini transcribes the consultation and prepares a structured draft for review.",
+        "Contrôle médical obligatoire": "Medical review required",
+        "Évitez les données identifiantes. Le médecin doit réviser la note avant validation.": "Avoid identifiable data. A doctor must review the note before validation.",
         "Le médecin garde le contrôle final avant toute validation ou exportation.": "The doctor retains final control before validation or export.",
         "Importer un fichier audio": "Upload an audio file",
         "MP3, WAV, M4A — jusqu'à 50 MB": "MP3, WAV, M4A — up to 50 MB",
+        "MP3, WAV, M4A, WEBM ou FLAC · 50 MB maximum": "MP3, WAV, M4A, WEBM or FLAC · 50 MB maximum",
         "Choisir un fichier": "Choose a file",
         "Audio sélectionné": "Selected audio",
         "Supprimer l'audio": "Remove audio",
         "Transcrire le fichier audio": "Transcribe audio file",
         "Ou enregistrer une consultation": "Or record a consultation",
+        "Enregistrer la consultation en direct": "Record the consultation live",
         "Transcription en direct": "Live transcription",
+        "Transcription médicale": "Medical transcription",
         "Prêt": "Ready",
         "Effacer": "Clear",
         "Analyser avec l'IA": "Analyze with AI",
@@ -8205,6 +9245,186 @@ document
         });
         translateText();
     });
+})();
+</script>
+
+<script>
+(() => {
+    const launcher = document.getElementById("medicalChatLauncher");
+    const panel = document.getElementById("medicalChatPanel");
+    const closeButton = document.getElementById("medicalChatClose");
+    const clearButton = document.getElementById("medicalChatClear");
+    const form = document.getElementById("medicalChatForm");
+    const input = document.getElementById("medicalChatInput");
+    const sendButton = document.getElementById("medicalChatSend");
+    const messagesElement = document.getElementById("medicalChatMessages");
+    const subtitle = document.getElementById("medicalChatSubtitle");
+    const warning = document.getElementById("medicalChatWarning");
+    const invite = document.getElementById("medicalChatInvite");
+
+    if (!launcher || !panel || !form || !input || !messagesElement) return;
+
+    let messages = [];
+    let isSending = false;
+
+    const copy = {
+        fr: {
+            subtitle: "Information médicale générale",
+            warning: "Ne partagez aucune donnée permettant d’identifier un patient. Cet assistant ne remplace pas un médecin.",
+            placeholder: "Décrivez votre question de santé…",
+            welcome: "Bonjour, je suis l’assistant MediNOTE AI. Comment puis-je vous aider ?",
+            invite: "Bonjour, je suis l’assistant MediNOTE AI. Comment puis-je vous aider ?",
+            open: "Ouvrir l’assistant médical",
+            close: "Fermer le chat",
+            clear: "Effacer la conversation",
+            send: "Envoyer",
+            error: "Impossible de contacter l’assistant. Vérifiez la configuration Gemini puis réessayez."
+        },
+        en: {
+            subtitle: "General medical information",
+            warning: "Do not share information that identifies a patient. This assistant does not replace a doctor.",
+            placeholder: "Describe your health question…",
+            welcome: "Hello, I’m the MediNOTE AI assistant. How can I help you?",
+            invite: "Hello, I’m the MediNOTE AI assistant. How can I help you?",
+            open: "Open the medical assistant",
+            close: "Close chat",
+            clear: "Clear conversation",
+            send: "Send",
+            error: "Unable to contact the assistant. Check the Gemini configuration and try again."
+        }
+    };
+
+    function language() {
+        return document.documentElement.lang === "en" ? "en" : "fr";
+    }
+
+    function addBubble(content, role, extraClass = "") {
+        const row = document.createElement("div");
+        row.className = `medical-chat-message ${role} ${extraClass}`.trim();
+        const bubble = document.createElement("div");
+        bubble.className = "medical-chat-bubble";
+        bubble.textContent = content;
+        row.appendChild(bubble);
+        messagesElement.appendChild(row);
+        messagesElement.scrollTop = messagesElement.scrollHeight;
+        return row;
+    }
+
+    function showWelcome() {
+        messagesElement.replaceChildren();
+        addBubble(copy[language()].welcome, "model");
+    }
+
+    function updateLanguage() {
+        const text = copy[language()];
+        subtitle.textContent = text.subtitle;
+        warning.textContent = text.warning;
+        invite.textContent = text.invite;
+        input.placeholder = text.placeholder;
+        launcher.setAttribute("aria-label", text.open);
+        closeButton.setAttribute("aria-label", text.close);
+        closeButton.title = text.close;
+        clearButton.setAttribute("aria-label", text.clear);
+        clearButton.title = text.clear;
+        sendButton.setAttribute("aria-label", text.send);
+        if (messages.length === 0 && !isSending) showWelcome();
+    }
+
+    function setOpen(open) {
+        panel.classList.toggle("open", open);
+        panel.setAttribute("aria-hidden", String(!open));
+        launcher.setAttribute("aria-expanded", String(open));
+        invite.classList.toggle("hidden", open);
+        if (open) {
+            window.setTimeout(() => input.focus(), 180);
+        }
+    }
+
+    function setSending(sending) {
+        isSending = sending;
+        sendButton.disabled = sending;
+        input.disabled = sending;
+    }
+
+    launcher.addEventListener("click", () => {
+        setOpen(!panel.classList.contains("open"));
+    });
+
+    closeButton.addEventListener("click", () => setOpen(false));
+
+    clearButton.addEventListener("click", () => {
+        messages = [];
+        showWelcome();
+        input.focus();
+    });
+
+    document.addEventListener("keydown", event => {
+        if (event.key === "Escape" && panel.classList.contains("open")) {
+            setOpen(false);
+            launcher.focus();
+        }
+    });
+
+    input.addEventListener("input", () => {
+        input.style.height = "auto";
+        input.style.height = `${Math.min(input.scrollHeight, 110)}px`;
+    });
+
+    input.addEventListener("keydown", event => {
+        if (event.key === "Enter" && !event.shiftKey) {
+            event.preventDefault();
+            form.requestSubmit();
+        }
+    });
+
+    form.addEventListener("submit", async event => {
+        event.preventDefault();
+        const content = input.value.trim();
+        if (!content || isSending) return;
+
+        messages.push({ role: "user", content });
+        messages = messages.slice(-12);
+        addBubble(content, "user");
+        input.value = "";
+        input.style.height = "auto";
+        setSending(true);
+
+        const typingRow = document.createElement("div");
+        typingRow.className = "medical-chat-message model";
+        typingRow.innerHTML = '<div class="medical-chat-bubble"><span class="medical-chat-typing" aria-label="Réponse en cours"><i></i><i></i><i></i></span></div>';
+        messagesElement.appendChild(typingRow);
+        messagesElement.scrollTop = messagesElement.scrollHeight;
+
+        try {
+            const response = await fetch("/api/chat", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ messages, language: language() })
+            });
+            const result = await response.json().catch(() => ({}));
+            if (!response.ok) throw new Error(result.error || copy[language()].error);
+
+            const reply = String(result.reply || "").trim();
+            if (!reply) throw new Error(copy[language()].error);
+            messages.push({ role: "model", content: reply });
+            messages = messages.slice(-12);
+            typingRow.remove();
+            addBubble(reply, "model");
+        } catch (error) {
+            typingRow.remove();
+            addBubble(error.message || copy[language()].error, "model", "error");
+        } finally {
+            setSending(false);
+            input.focus();
+        }
+    });
+
+    new MutationObserver(updateLanguage).observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ["lang"]
+    });
+
+    updateLanguage();
 })();
 </script>
 

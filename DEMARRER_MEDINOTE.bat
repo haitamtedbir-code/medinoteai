@@ -1,5 +1,5 @@
 @echo off
-title MediNOTE AI - Whisper local
+title MediNOTE AI
 cd /d "%~dp0"
 
 if not exist ".venv\Scripts\python.exe" (
@@ -10,6 +10,5 @@ if not exist ".venv\Scripts\python.exe" (
 )
 
 start "" "http://127.0.0.1:5000"
-call .venv\Scripts\activate.bat
-python app.py
+".venv\Scripts\python.exe" -m waitress --host=127.0.0.1 --port=5000 server:app
 pause

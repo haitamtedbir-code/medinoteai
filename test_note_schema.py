@@ -1,4 +1,4 @@
-"""Test local du contrat Pydantic, sans Whisper, EDS-NLP ni Ollama."""
+"""Test local du contrat Pydantic, sans effectuer d'appel Gemini."""
 
 from server import MedicalNote
 
